@@ -7,7 +7,7 @@ const API_ROOT = `${normalizedBase}/api`
 
 export const api = axios.create({
   baseURL: API_ROOT,
-  timeout: 10000,
+  timeout: 15000, // Increased timeout for mobile networks
 })
 
 // Request interceptor to add token

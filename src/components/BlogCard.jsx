@@ -11,7 +11,13 @@ export const BlogCard = ({ blog }) => {
   const [liked, setLiked] = useState(Boolean(blog.liked))
   const [isLiking, setIsLiking] = useState(false)
 
-  const handleLike = async () => {
+  const handleLike = async (e) => {
+    // Prevent any event propagation (especially important for mobile touch events)
+    if (e) {
+      e.preventDefault()
+      e.stopPropagation()
+    }
+    
     if (isLiking) return
     setIsLiking(true)
 
@@ -28,6 +34,8 @@ export const BlogCard = ({ blog }) => {
         setLikes(res.data.blog?.likes ?? likes)
       }
     } catch (err) {
+      // Log error for debugging mobile issues
+      console.error('Like request failed:', err.message)
       // revert on error
       setLiked((v) => !v)
       setLikes((l) => (liked ? Math.max(0, l - 1) : l + 1))
@@ -84,9 +92,10 @@ export const BlogCard = ({ blog }) => {
             <div className="flex items-center gap-2 text-slate-500 dark:text-slate-400">
               <div className="flex items-center gap-2">
                 <button
-                  onClick={(e) => { e.preventDefault(); e.stopPropagation(); handleLike(); }}
+                  onClick={handleLike}
+                  onTouchEnd={handleLike}
                   disabled={isLiking}
-                  className="inline-flex items-center gap-2 text-inherit focus:outline-none"
+                  className="inline-flex items-center gap-2 text-inherit focus:outline-none hover:opacity-75 transition-opacity"
                 >
                   {liked ? (
                     <BsHeartFill className="text-rose-500 opacity-95" />
