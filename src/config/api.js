@@ -4,11 +4,12 @@
  */
 
 // Get API base URL from environment (should be domain only, no trailing `/api`)
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000'
+// IMPORTANT: No hard-coded backend URLs here. Set VITE_API_BASE_URL in .env files.
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || ''
 
-// Log warning if using fallback (development only)
+// Log guidance
 if (!import.meta.env.VITE_API_BASE_URL && import.meta.env.MODE === 'development') {
-  console.warn('⚠️ VITE_API_BASE_URL not set. Using development fallback: http://localhost:5000')
+  console.warn('⚠️ VITE_API_BASE_URL not set. Please set VITE_API_BASE_URL in .env.development for local development')
 }
 
 if (!import.meta.env.VITE_API_BASE_URL && import.meta.env.MODE === 'production') {
