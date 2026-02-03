@@ -1,7 +1,7 @@
 import { Link, useNavigate } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext.jsx'
 import { ThemeToggle } from './ThemeToggle.jsx'
-import { FiLogOut, FiPlusSquare, FiHome, FiMenu, FiX } from 'react-icons/fi'
+import { FiLogOut, FiPlusSquare, FiMenu, FiX, FiArrowRight } from 'react-icons/fi'
 import { useState } from 'react'
 
 export const Navbar = () => {
@@ -12,115 +12,142 @@ export const Navbar = () => {
   const handleLogout = () => {
     logout()
     navigate('/')
+    setOpen(false)
   }
 
+  const navLinks = [
+    { label: 'Home', path: '/' },
+    { label: 'About', path: '/about' },
+    { label: 'Contact', path: '/contact' },
+  ]
+
   return (
-    <nav className="bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-800 sticky top-0 z-50 shadow-sm">
-      <div className="container mx-auto px-4 py-4">
+    <nav className="bg-white/80 dark:bg-slate-900/80 backdrop-blur-md border-b border-gray-200/50 dark:border-slate-800/50 sticky top-0 z-50 shadow-lg dark:shadow-2xl">
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-3 sm:py-4">
         <div className="flex justify-between items-center">
-          <div className="flex items-center gap-3">
-            {/* Mobile - Hamburger (left of logo) */}
-            <div className="md:hidden flex items-center">
-              <button
-                onClick={() => setOpen((v) => !v)}
-                aria-label={open ? 'Close menu' : 'Open menu'}
-                className="p-2 rounded-md text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-800 transition"
-              >
-                {open ? <FiX size={20} /> : <FiMenu size={20} />}
-              </button>
+          {/* Logo - Left */}
+          <Link to="/" className="flex items-center gap-2 group">
+            <div className="w-9 h-9 sm:w-10 sm:h-10 bg-gradient-to-br from-blue-600 to-indigo-600 rounded-lg flex items-center justify-center text-white font-bold text-lg sm:text-xl group-hover:shadow-lg group-hover:scale-105 transition-all">
+              J
             </div>
-
-            {/* Logo */}
-            <Link to="/" className="text-2xl font-bold text-blue-600 dark:text-blue-400 flex items-center gap-2 hover:text-blue-700 dark:hover:text-blue-300 transition">
-              <FiHome size={24} />
+            <span className="text-xl sm:text-2xl font-bold bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">
               JagoIndia
-            </Link>
-          </div>
+            </span>
+          </Link>
 
-          {/* Center - Nav Links */}
-          <div className="hidden md:flex items-center gap-8">
-            <Link
-              to="/"
-              className="text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 font-medium transition"
-            >
-              Home
-            </Link>
-            <Link
-              to="/about"
-              className="text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 font-medium transition"
-            >
-              About
-            </Link>
-            <Link
-              to="/contact"
-              className="text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 font-medium transition"
-            >
-              Contact
-            </Link>
+          {/* Center - Nav Links (Desktop) */}
+          <div className="hidden md:flex items-center gap-1">
+            {navLinks.map((link) => (
+              <Link
+                key={link.path}
+                to={link.path}
+                className="text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 px-3 py-2 rounded-lg font-medium transition-colors relative group"
+              >
+                {link.label}
+                <span className="absolute bottom-0 left-3 right-3 h-0.5 bg-gradient-to-r from-blue-600 to-indigo-600 rounded-full scale-x-0 group-hover:scale-x-100 transition-transform" />
+              </Link>
+            ))}
             {user && (
               <Link
                 to="/admin/dashboard"
-                className="text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 font-medium transition"
+                className="text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 px-3 py-2 rounded-lg font-medium transition-colors relative group"
               >
                 Dashboard
+                <span className="absolute bottom-0 left-3 right-3 h-0.5 bg-gradient-to-r from-blue-600 to-indigo-600 rounded-full scale-x-0 group-hover:scale-x-100 transition-transform" />
               </Link>
             )}
           </div>
 
           {/* Right - Actions */}
-          <div className="flex items-center gap-3 sm:gap-4">
+          <div className="flex items-center gap-2 sm:gap-3">
             <ThemeToggle />
 
             {user ? (
-              <div className="flex items-center gap-2 sm:gap-3">
+              <div className="hidden sm:flex items-center gap-2">
                 <Link
                   to="/admin/create-blog"
-                  className="bg-blue-600 hover:bg-blue-700 text-white px-3 sm:px-4 py-2 rounded-lg flex items-center gap-1 sm:gap-2 text-sm sm:text-base transition font-medium"
+                  className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white px-4 py-2 rounded-lg flex items-center gap-2 text-sm font-semibold transition-all hover:shadow-lg hover:scale-105"
                 >
                   <FiPlusSquare size={18} />
-                  <span className="hidden sm:inline">New</span>
+                  Create
                 </Link>
                 <button
                   onClick={handleLogout}
-                  className="bg-red-600 hover:bg-red-700 text-white px-3 sm:px-4 py-2 rounded-lg flex items-center gap-1 sm:gap-2 text-sm sm:text-base transition font-medium"
+                  className="bg-gradient-to-r from-red-600 to-rose-600 hover:from-red-700 hover:to-rose-700 text-white px-4 py-2 rounded-lg flex items-center gap-2 text-sm font-semibold transition-all hover:shadow-lg hover:scale-105"
                 >
                   <FiLogOut size={18} />
-                  <span className="hidden sm:inline">Logout</span>
+                  Logout
                 </button>
               </div>
             ) : (
               <Link
                 to="/admin/login"
-                className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg transition font-medium"
+                className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white px-4 py-2 rounded-lg text-sm sm:text-base font-semibold transition-all hover:shadow-lg hover:scale-105 flex items-center gap-2"
               >
-                Login
+                Sign In
+                <FiArrowRight size={18} />
               </Link>
             )}
+
+            {/* Mobile Menu Button */}
+            <button
+              onClick={() => setOpen(!open)}
+              className="md:hidden p-2 rounded-lg text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-slate-800 transition-colors"
+              aria-label={open ? 'Close menu' : 'Open menu'}
+            >
+              {open ? <FiX size={24} /> : <FiMenu size={24} />}
+            </button>
           </div>
         </div>
-      </div>
 
-      {/* Mobile menu panel */}
-      {open && (
-        <div className="md:hidden bg-white dark:bg-gray-900 border-t border-gray-200 dark:border-gray-800">
-          <div className="container mx-auto px-4 py-4">
-            <div className="flex flex-col gap-3">
-              <Link to="/" onClick={() => setOpen(false)} className="font-medium text-gray-700 dark:text-gray-300">Home</Link>
-              <Link to="/about" onClick={() => setOpen(false)} className="font-medium text-gray-700 dark:text-gray-300">About</Link>
-              <Link to="/contact" onClick={() => setOpen(false)} className="font-medium text-gray-700 dark:text-gray-300">Contact</Link>
-              {user ? (
+        {/* Mobile Menu */}
+        {open && (
+          <div className="md:hidden absolute top-full left-0 right-0 bg-white dark:bg-slate-900 border-b border-gray-200 dark:border-slate-800 shadow-xl">
+            <div className="container mx-auto px-4 py-6 space-y-2">
+              {navLinks.map((link) => (
+                <Link
+                  key={link.path}
+                  to={link.path}
+                  onClick={() => setOpen(false)}
+                  className="block px-4 py-2 text-gray-700 dark:text-gray-300 hover:bg-blue-50 dark:hover:bg-slate-800 rounded-lg font-medium transition-colors"
+                >
+                  {link.label}
+                </Link>
+              ))}
+              {user && (
                 <>
-                  <Link to="/admin/dashboard" onClick={() => setOpen(false)} className="font-medium text-gray-700 dark:text-gray-300">Dashboard</Link>
-                  <Link to="/admin/create-blog" onClick={() => setOpen(false)} className="font-medium text-gray-700 dark:text-gray-300">New</Link>
-                  <button onClick={() => { handleLogout(); setOpen(false); }} className="text-left font-medium text-red-600">Logout</button>
+                  <Link
+                    to="/admin/dashboard"
+                    onClick={() => setOpen(false)}
+                    className="block px-4 py-2 text-gray-700 dark:text-gray-300 hover:bg-blue-50 dark:hover:bg-slate-800 rounded-lg font-medium transition-colors"
+                  >
+                    Dashboard
+                  </Link>
+                  <Link
+                    to="/admin/create-blog"
+                    onClick={() => setOpen(false)}
+                    className="block px-4 py-2 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-lg font-semibold hover:shadow-lg transition-all"
+                  >
+                    Create New Blog
+                  </Link>
+                  <button
+                    onClick={() => {
+                      handleLogout()
+                      setOpen(false)
+                    }}
+                    className="w-full text-left px-4 py-2 text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-slate-800 rounded-lg font-medium transition-colors flex items-center gap-2"
+                  >
+                    <FiLogOut size={18} />
+                    Logout
+                  </button>
                 </>
-              ) : (
-                <Link to="/admin/login" onClick={() => setOpen(false)} className="font-medium text-gray-700 dark:text-gray-300">Login</Link>
               )}
             </div>
           </div>
-        </div>
-      )}
+        )}
+      </div>
     </nav>
   )
 }
+
+export default Navbar

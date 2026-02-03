@@ -1,5 +1,4 @@
 import { useState, useEffect } from 'react'
-import { Link } from 'react-router-dom'
 import { Helmet } from 'react-helmet-async'
 import { blogAPI } from '../services/api.js'
 import { BlogCard } from '../components/BlogCard.jsx'
@@ -35,7 +34,6 @@ export const Home = () => {
     fetchBlogs()
   }, [page])
 
-  // refetch when search or category changes
   useEffect(() => {
     setPage(1)
     const controller = new AbortController()
@@ -52,7 +50,6 @@ export const Home = () => {
       }
     }
 
-    // debounce small delay for search
     const t = setTimeout(() => doFetch(), 300)
     return () => {
       clearTimeout(t)
@@ -70,147 +67,145 @@ export const Home = () => {
       </Helmet>
 
       <div className="w-full">
-        {/* Hero Section - center panel with accent gradient so page background stays consistent */}
-        <section className="bg-transparent">
-          <div className="container mx-auto px-4 py-10 sm:py-12">
-            <div className="grid grid-cols-1 md:grid-cols-12 gap-6 items-center">
-              {/* Left - Intro */}
-              <div className="md:col-span-7 lg:col-span-8">
-                <div className="bg-gradient-to-br from-indigo-600 to-sky-500 dark:from-slate-900 dark:to-slate-800 rounded-2xl p-8 md:p-12 text-white">
-                  <div className="mb-3">
-                    <span className="inline-block h-0.5 w-16 bg-white/60 rounded-full opacity-80" />
-                  </div>
-                  <h1 className="text-3xl md:text-4xl font-semibold leading-snug">
-                    Ideas that move you
-                  </h1>
-                  <p className="mt-3 text-white/90 max-w-xl text-base">
-                    Curated articles, thoughtful essays, and practical guides from independent creators. Read, learn, and build your perspective.
-                  </p>
-                  {/* Mobile search inside hero */}
-                  <div className="mt-4 block md:hidden">
-                    <input
-                      value={search}
-                      onChange={(e) => setSearch(e.target.value)}
-                      placeholder="Search titles, content, or category"
-                      className="w-full px-3 py-2 rounded-lg border bg-white text-sm text-slate-700"
-                    />
-                  </div>
-                </div>
-              </div>
-
-              {/* Right - Featured (optional) */}
-              <div className="md:col-span-5 lg:col-span-4">
-                <div className="hidden md:block">
-                  <div className="bg-slate-50 dark:bg-slate-800 rounded-xl p-4 shadow-md border border-gray-200 dark:border-slate-700">
-                    <p className="text-xs uppercase text-slate-700 dark:text-slate-300 tracking-wider mb-2">Featured</p>
-                    {/* show first blog as a small feature if available */}
-                    {blogs && blogs[0] ? (
-                      <Link to={`/blog/${blogs[0].slug}`} className="flex gap-3 items-start hover:opacity-80 transition">
-                        <div className="w-16 h-16 rounded-lg overflow-hidden flex-shrink-0">
-                          {blogs[0].thumbnail ? (
-                            <img src={blogs[0].thumbnail} alt={blogs[0].title} className="w-full h-full object-cover" />
-                          ) : (
-                            <div className="w-full h-full bg-gradient-to-br from-slate-200 to-slate-300 dark:from-slate-700 dark:to-slate-600" />
-                          )}
-                        </div>
-                        <div>
-                          <h3 className="text-sm font-semibold text-slate-900 dark:text-white line-clamp-2">{blogs[0].title}</h3>
-                          <p className="text-xs text-slate-600 dark:text-slate-300 mt-1">{blogs[0].author?.name} • {new Date(blogs[0].createdAt).toLocaleDateString()}</p>
-                        </div>
-                      </Link>
-                    ) : (
-                      <div className="text-sm text-slate-600 dark:text-slate-300">Explore the latest articles below.</div>
-                    )}
-                  </div>
-                </div>
-              </div>
-            </div>
+        {/* Hero Section */}
+        <section className="bg-gradient-to-br from-slate-50 via-white to-blue-50 dark:from-slate-950 dark:via-slate-900 dark:to-slate-900 relative overflow-hidden">
+          {/* Background Decorations */}
+          <div className="absolute inset-0 overflow-hidden">
+            <div className="absolute top-20 left-10 w-96 h-96 bg-blue-300 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob" />
+            <div className="absolute top-40 right-10 w-96 h-96 bg-purple-300 rounded-full mix-blend-multiply filter blur-3xl opacity-20" style={{ animation: 'blob 7s infinite 2s' }} />
+            <div className="absolute -bottom-8 left-20 w-96 h-96 bg-pink-300 rounded-full mix-blend-multiply filter blur-3xl opacity-20" style={{ animation: 'blob 7s infinite 4s' }} />
           </div>
-        </section>
 
-        {/* Blog Grid Section - Latest Articles */}
-        <section className="bg-transparent -mt-6">
-          <div className="container mx-auto px-4 w-full py-10">
-            <div className="flex items-center justify-between mb-8">
-              <div>
-                <h2 className="text-2xl font-semibold text-slate-900 dark:text-white">Latest Articles</h2>
-                <p className="text-sm text-slate-500 dark:text-slate-400">Freshly published stories, updated daily.</p>
+          <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-16 sm:py-24 relative z-10">
+            <div className="max-w-4xl mx-auto text-center">
+              <div className="inline-flex items-center gap-2 mb-6 px-4 py-2 bg-blue-100 dark:bg-blue-900/30 rounded-full border border-blue-200 dark:border-blue-800">
+                <span className="flex h-2 w-2 rounded-full bg-blue-600 animate-pulse" />
+                <span className="text-sm font-semibold text-blue-700 dark:text-blue-300">Latest articles updated daily</span>
               </div>
-            
-              <div className="hidden sm:flex flex-col sm:flex-row gap-3 items-start sm:items-center">
-                <div className="flex items-center gap-2 w-full sm:w-auto">
+
+              <h1 className="text-5xl sm:text-6xl lg:text-7xl font-bold text-gray-900 dark:text-white mb-6 leading-tight">
+                Ideas that <span className="bg-gradient-to-r from-blue-600 via-purple-600 to-indigo-600 bg-clip-text text-transparent">move you</span>
+              </h1>
+
+              <p className="text-xl sm:text-2xl text-gray-700 dark:text-gray-300 max-w-2xl mx-auto mb-10 leading-relaxed">
+                Curated articles, thoughtful essays, and practical guides from independent creators. Read, learn, and build your perspective.
+              </p>
+
+              {/* Search Bar */}
+              <div className="max-w-2xl mx-auto mb-12">
+                <div className="relative group">
                   <input
                     value={search}
                     onChange={(e) => setSearch(e.target.value)}
-                    placeholder="Search titles, content, or category"
-                    className="px-3 py-2 rounded-lg border w-full sm:w-64 bg-white dark:bg-slate-800 border-gray-200 dark:border-gray-700 text-sm"
+                    placeholder="Search articles, authors, or topics..."
+                    className="w-full px-6 py-4 rounded-2xl border-2 border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent transition-all shadow-lg"
                   />
+                  <svg className="absolute right-5 top-4 w-6 h-6 text-gray-400 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                  </svg>
                 </div>
               </div>
-            </div>
-            {/* Category Filters */}
-            <div className="flex gap-2 flex-wrap mb-6">
-              {['All','Tech','Politics','AI','Business','Startups','More'].map((cat) => {
-                const value = cat === 'All' ? '' : cat
-                return (
-                  <button
-                    key={cat}
-                    onClick={() => setCategory(category === value ? '' : value)}
-                    aria-pressed={category === value}
-                    className={`px-3 py-1 rounded-full text-sm font-medium transition-shadow ${category === value ? 'bg-blue-600 text-white' : 'bg-white dark:bg-slate-800 border border-gray-200 dark:border-gray-700 text-slate-700 dark:text-slate-200'}`}
-                  >
-                    {cat}
-                  </button>
-                )
-              })}
-            </div>
-            {/* Loading State */}
-            {loading ? (
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                {Array(6).fill(0).map((_, i) => (
-                  <div key={i} className="bg-gradient-to-b from-white/40 to-white/20 dark:from-slate-900/60 dark:to-slate-900/40 rounded-xl overflow-hidden animate-pulse">
-                    <div className="h-44 bg-slate-700/30"></div>
-                    <div className="p-5 space-y-3">
-                      <div className="h-4 bg-slate-600/30 rounded w-3/4"></div>
-                      <div className="h-4 bg-slate-600/30 rounded"></div>
-                      <div className="h-3 bg-slate-600/30 rounded w-1/2"></div>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            ) : blogs.length > 0 ? (
-              /* Blogs Found */
-              <>
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                  {blogs.map((blog) => (
-                    <BlogCard key={blog._id} blog={blog} />
-                  ))}
-                </div>
 
-                {/* Pagination - Only show if multiple pages */}
-                {totalPages > 1 && (
-                  <div className="flex justify-center mt-10 pt-6">
-                    <Pagination current={page} total={totalPages} onPageChange={setPage} />
-                  </div>
-                )}
-              </>
-            ) : (
-              /* Empty State */
-              <div className="flex items-center justify-center py-16">
-                <div className="max-w-xl text-center bg-gradient-to-b from-white/6 dark:from-white/4 backdrop-blur-sm rounded-xl p-8 shadow-lg">
-                  <div className="flex items-center justify-center mb-4">
-                    <div className="bg-slate-700/20 rounded-full p-4">
-                      <FiInbox className="w-8 h-8 text-slate-200" />
-                    </div>
-                  </div>
-                  <h2 className="text-xl font-semibold text-white mb-2">No articles yet</h2>
-                  <p className="text-sm text-slate-300">We’re preparing high-quality content for you. Check back soon.</p>
+              {/* Categories */}
+              <div className="flex items-center justify-center gap-3 flex-wrap mb-8">
+                <span className="text-sm font-semibold text-gray-600 dark:text-gray-400">Filter by:</span>
+                <div className="flex gap-2 flex-wrap justify-center">
+                  {['All', 'Tech', 'Politics', 'AI', 'Business', 'Startups', 'More'].map((cat) => {
+                    const value = cat === 'All' ? '' : cat
+                    const isActive = category === value
+                    return (
+                      <button
+                        key={cat}
+                        onClick={() => setCategory(category === value ? '' : value)}
+                        className={`px-4 py-2 rounded-full font-medium text-sm transition-all ${
+                          isActive
+                            ? 'bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow-lg shadow-blue-500/50'
+                            : 'bg-white dark:bg-slate-800 text-gray-700 dark:text-gray-300 border border-gray-200 dark:border-slate-700 hover:border-blue-300 dark:hover:border-blue-600'
+                        }`}
+                      >
+                        {cat}
+                      </button>
+                    )
+                  })}
                 </div>
               </div>
-            )}
+            </div>
           </div>
         </section>
+
+        {/* Blog Grid Section */}
+        <section className="container mx-auto px-4 sm:px-6 lg:px-8 py-16 sm:py-24">
+          {/* Section Header */}
+          <div className="mb-12">
+            <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-6">
+              <div>
+                <div className="inline-flex items-center gap-2 mb-4">
+                  <span className="h-1 w-8 bg-gradient-to-r from-blue-600 to-indigo-600 rounded-full" />
+                  <span className="text-sm font-bold text-blue-600 dark:text-blue-400 uppercase tracking-wider">Featured</span>
+                </div>
+                <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 dark:text-white">
+                  Latest Articles
+                </h2>
+                <p className="text-gray-600 dark:text-gray-400 mt-2">Freshly published stories and insights</p>
+              </div>
+            </div>
+          </div>
+
+          {/* Loading State */}
+          {loading ? (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+              {Array(6).fill(0).map((_, i) => (
+                <div key={i} className="animate-pulse">
+                  <div className="h-48 bg-gray-200 dark:bg-slate-700 rounded-xl mb-4" />
+                  <div className="h-4 bg-gray-200 dark:bg-slate-700 rounded w-3/4 mb-3" />
+                  <div className="h-4 bg-gray-200 dark:bg-slate-700 rounded mb-3" />
+                  <div className="h-3 bg-gray-200 dark:bg-slate-700 rounded w-1/2" />
+                </div>
+              ))}
+            </div>
+          ) : blogs.length > 0 ? (
+            <>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                {blogs.map((blog) => (
+                  <BlogCard key={blog._id} blog={blog} />
+                ))}
+              </div>
+
+              {/* Pagination */}
+              {totalPages > 1 && (
+                <div className="flex justify-center mt-16 pt-8 border-t border-gray-200 dark:border-slate-800">
+                  <Pagination current={page} total={totalPages} onPageChange={setPage} />
+                </div>
+              )}
+            </>
+          ) : (
+            /* Empty State */
+            <div className="flex items-center justify-center py-24">
+              <div className="text-center">
+                <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-gray-100 dark:bg-slate-800 mb-6">
+                  <FiInbox className="w-8 h-8 text-gray-400" />
+                </div>
+                <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">No articles found</h3>
+                <p className="text-gray-600 dark:text-gray-400 max-w-md mx-auto">Try adjusting your search or filters. We're constantly publishing new content.</p>
+              </div>
+            </div>
+          )}
+        </section>
+
+        {/* Style for blob animation */}
+        <style>{`
+          @keyframes blob {
+            0%, 100% { transform: translate(0, 0) scale(1); }
+            33% { transform: translate(30px, -50px) scale(1.1); }
+            66% { transform: translate(-20px, 20px) scale(0.9); }
+          }
+          .animate-blob {
+            animation: blob 7s infinite;
+          }
+        `}</style>
       </div>
     </>
   )
 }
+
+export default Home
