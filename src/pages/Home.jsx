@@ -68,7 +68,7 @@ export const Home = () => {
 
       <div className="w-full">
         {/* Hero Section */}
-        <section className="bg-gradient-to-br from-slate-50 via-white to-blue-50 dark:from-slate-950 dark:via-slate-900 dark:to-slate-900 relative overflow-hidden">
+        <section className="bg-gradient-to-br from-slate-50 via-white to-blue-50 dark:from-slate-950 dark:via-slate-900 dark:to-slate-900 relative overflow-hidden rounded-b-[30px] shadow-lg dark:shadow-2xl">
           {/* Background Decorations */}
           <div className="absolute inset-0 overflow-hidden">
             <div className="absolute top-20 left-10 w-96 h-96 bg-blue-300 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob" />
