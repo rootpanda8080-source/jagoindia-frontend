@@ -1,14 +1,13 @@
 import { FiHeart, FiCalendar, FiUser, FiEye } from 'react-icons/fi'
-import { BsHeartFill } from 'react-icons/bs'
 import { Link } from 'react-router-dom'
 import { useState } from 'react'
 import { blogAPI } from '../services/api'
 import dayjs from 'dayjs'
+import toast from 'react-hot-toast'
 
 export const BlogCard = ({ blog }) => {
   const excerpt = blog.excerpt || blog.summary || (blog.content ? blog.content.replace(/(<([^>]+)>)/gi, '').slice(0, 140) + '...' : '')
   const [likes, setLikes] = useState(blog.likes || 0)
-  const [liked, setLiked] = useState(Boolean(blog.liked))
   const [isLiking, setIsLiking] = useState(false)
 
   const handleLike = async (e) => {
@@ -21,24 +20,26 @@ export const BlogCard = ({ blog }) => {
     if (isLiking) return
     setIsLiking(true)
 
-    // optimistic toggle
-    const nextLiked = !liked
-    setLiked(nextLiked)
-    setLikes((l) => Math.max(0, l + (nextLiked ? 1 : -1)))
+    // Optimistic update: increment likes immediately
+    const previousLikes = likes
+    setLikes((l) => l + 1)
 
     try {
       const res = await blogAPI.like(blog._id)
-      // server returns liked flag
-      if (res?.data?.liked !== undefined) {
-        setLiked(Boolean(res.data.liked))
-        setLikes(res.data.blog?.likes ?? likes)
+      // Server returns { success: true, likes: updatedLikes }
+      if (res?.data?.success && res.data.likes !== undefined) {
+        setLikes(res.data.likes)
+      } else {
+        // Fallback if response structure is unexpected
+        toast.error('Unexpected response format')
+        setLikes(previousLikes)
       }
     } catch (err) {
-      // Log error for debugging mobile issues
+      // Log error for debugging
       console.error('Like request failed:', err.message)
-      // revert on error
-      setLiked((v) => !v)
-      setLikes((l) => (liked ? Math.max(0, l - 1) : l + 1))
+      toast.error('Failed to save like')
+      // Revert on error
+      setLikes(previousLikes)
     } finally {
       setIsLiking(false)
     }
@@ -97,11 +98,7 @@ export const BlogCard = ({ blog }) => {
                   disabled={isLiking}
                   className="inline-flex items-center gap-2 text-inherit focus:outline-none hover:opacity-75 transition-opacity"
                 >
-                  {liked ? (
-                    <BsHeartFill className="text-rose-500 opacity-95" />
-                  ) : (
-                    <FiHeart className="opacity-80" />
-                  )}
+                  <FiHeart className="opacity-80" />
                   <span>{likes}</span>
                 </button>
               </div>
